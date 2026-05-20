@@ -736,13 +736,14 @@
     text-align: center;
     border-radius: 8px;
     pointer-events: none;
-    animation: ideaFloat 1.8s ease-out forwards;
+    animation: ideaFloat 3.5s ease-out forwards;
     text-shadow: 1px 1px 0 #fff;
   }
   @keyframes ideaFloat {
     0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
-    20% { opacity: 1; transform: translate(-50%, -10px) scale(1.1); }
-    40% { transform: translate(-50%, -20px) scale(1); }
+    10% { opacity: 1; transform: translate(-50%, -10px) scale(1.1); }
+    20% { transform: translate(-50%, -20px) scale(1); }
+    80% { opacity: 1; transform: translate(-50%, -60px) scale(1); }
     100% { opacity: 0; transform: translate(-50%, -100px) scale(1); }
   }
 
@@ -966,6 +967,31 @@
     display: block !important;
     image-rendering: pixelated;
   }
+  /* Botón grande SUBIR CV */
+  .upload-cv-btn {
+    background: #1A5DD9 !important;
+    color: #fff !important;
+    border: 5px solid #000 !important;
+    padding: 26px 36px !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: clamp(14px, 4vw, 18px) !important;
+    cursor: pointer;
+    box-shadow: 6px 6px 0 #000 !important;
+    text-shadow: 3px 3px 0 #000;
+    letter-spacing: 2px;
+    margin: 20px 0 14px 0 !important;
+    max-width: 360px;
+    width: calc(100% - 30px);
+    animation: pulseBlue 1.5s ease-in-out infinite;
+  }
+  .upload-cv-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 2px 2px 0 #000 !important;
+  }
+  @keyframes pulseBlue {
+    0%, 100% { box-shadow: 6px 6px 0 #000, 0 0 0 0 rgba(0, 255, 255, 0.7); }
+    50% { box-shadow: 6px 6px 0 #000, 0 0 0 12px rgba(0, 255, 255, 0); }
+  }
   .qr-note {
     font-family: 'Press Start 2P', monospace;
     font-size: 10px;
@@ -1152,7 +1178,14 @@
     <h2>MUNDO 1-4</h2>
     <div class="robot-icon-big" id="intro-robot-4"></div>
     <p>"INNOVATION FACTORY 🏭"</p>
-    <p style="margin-top:10px;color:#fff;font-size:10px;">¡Recolecta ideas en 20 segundos!</p>
+    <div style="background:rgba(255,215,0,0.15);border:3px solid #FFD700;padding:14px;margin:18px auto;max-width:340px;border-radius:8px;">
+      <p style="color:#FFD700;font-size:11px;line-height:1.6;text-align:left;">
+        ⚡ Atrapa los RAYOS DORADOS<br>
+        💡 Cada rayo te muestra un dato de Tendencys<br>
+        ⏱️ Tienes 30 segundos<br>
+        🎮 Usa ← → para moverte y JET para volar
+      </p>
+    </div>
     <button class="press-btn" onclick="startWorld4()">FLY! ▶</button>
   </div>
 
@@ -1162,7 +1195,7 @@
       <div class="hud-item">⚡ <span id="hud-powerups">0</span></div>
       <div class="hud-item">⭐ 1-4</div>
     </div>
-    <div class="bonus-timer" id="bonus-timer">20</div>
+    <div class="bonus-timer" id="bonus-timer">30</div>
     <div class="game-area" id="game-4"></div>
   </div>
 
@@ -1201,20 +1234,23 @@
     <button class="cine-skip" onclick="skipFinal()">SKIP ▶▶</button>
   </div>
 
-  <!-- ============== PANTALLA QR PARA CV ============== -->
+  <!-- ============== PANTALLA SUBIR CV ============== -->
   <div class="screen qr-screen hidden" id="screen-qr">
     <div class="qr-header">
       <div class="tendencys-logo" style="max-width:200px;margin-bottom:10px;"><img id="logo-qr-img" alt="Tendencys"></div>
       <div id="qr-robot"></div>
       <h2>UPLOAD YOUR CV! 📄</h2>
-      <p class="qr-instructions">Escanea con tu celular para subir tu CV y join the <strong>Tendencys team</strong>!</p>
+      <p class="qr-instructions">¡Último paso! Sube tu CV para join the <strong>Tendencys team</strong></p>
     </div>
-    <div class="qr-card">
-      <div id="qrcode"></div>
-    </div>
-    <p class="qr-note">📱 Apunta la cámara al código</p>
-    <button class="press-btn" onclick="goToEndScreen()" style="margin-top:18px;background:#00A800;">CV SUBIDO ✓</button>
-    <button class="cine-skip" onclick="goToEndScreen()" style="margin-top:10px;">Subir después ▶▶</button>
+
+    <button class="press-btn upload-cv-btn" onclick="openCVForm()">
+      📎 SUBIR MI CV
+    </button>
+
+    <p class="qr-note">Se abrirá un formulario para subir tu PDF</p>
+
+    <button class="press-btn" onclick="goToEndScreen()" style="margin-top:14px;background:#00A800;">YA SUBÍ MI CV ✓</button>
+    <button class="cine-skip" onclick="goToEndScreen()" style="margin-top:8px;">Subir después ▶▶</button>
   </div>
 
   <!-- ============== FINAL ============== -->
@@ -1496,9 +1532,6 @@
   };
 </script>
 
-<!-- Librería para QR -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <script>
 
 </script>
@@ -1636,7 +1669,7 @@ const TENDY_DIALOG = {
   world1: ["¡Jump para descubrir info de Tendencys! 💎", "Mantén el botón para el JET-PACK ✈️"],
   world2: ["¡Cuidado con los glitches! ⚡", "El jet-pack saves you 🚀"],
   world3: ["Tiempo del values check 💎", "Show us tu Tendencyer side!"],
-  world4: ["20 seconds left! ⏱️", "Catch all the power-ups"],
+  world4: ["¡Atrapa los rayos! ⚡", "Cada rayo = 1 dato 💡"],
   world5: ["FINAL BATTLE! ⚔️", "Press FIRE para disparar 🔫"],
   final: [
     "AMAZING! 🎉 You did it.",
@@ -1871,10 +1904,10 @@ function startWorld1() {
   area.appendChild(makeGround());
 
   const blockPositions = [
-    { left: 22, top: 38 },
-    { left: 48, top: 28 },
-    { left: 70, top: 38 },
-    { left: 86, top: 22 }
+    { left: 18, top: 38 },
+    { left: 40, top: 28 },
+    { left: 60, top: 38 },
+    { left: 75, top: 22 }
   ];
   blockPositions.forEach((pos, i) => {
     const b = document.createElement('div');
@@ -1890,7 +1923,7 @@ function startWorld1() {
   plat.className = 'platform';
   plat.style.width = '100px';
   plat.style.height = '14px';
-  plat.style.left = '44%';
+  plat.style.left = '36%';
   plat.style.bottom = '38%';
   area.appendChild(plat);
 
@@ -1898,16 +1931,16 @@ function startWorld1() {
   plat2.className = 'platform';
   plat2.style.width = '90px';
   plat2.style.height = '14px';
-  plat2.style.left = '82%';
+  plat2.style.left = '71%';
   plat2.style.bottom = '52%';
   area.appendChild(plat2);
 
   const coinPositions = [
-    { left: 18, bottom: 45 },
-    { left: 36, bottom: 55 },
-    { left: 58, bottom: 50 },
-    { left: 75, bottom: 60 },
-    { left: 88, bottom: 65 }
+    { left: 14, bottom: 45 },
+    { left: 30, bottom: 55 },
+    { left: 50, bottom: 50 },
+    { left: 65, bottom: 60 },
+    { left: 80, bottom: 65 }
   ];
   coinPositions.forEach(pos => {
     const c = document.createElement('div');
@@ -2030,6 +2063,21 @@ function updateWorld1() {
   if (pipe) {
     const pp = pipe.getBoundingClientRect();
     if (overlap(pr, pp) && !w1.finished) {
+      // Solo permitir pasar si golpeó los 4 bloques
+      const totalBlocks = document.querySelectorAll('#game-1 .qblock').length;
+      const hitBlocks = document.querySelectorAll('#game-1 .qblock.hit').length;
+      if (hitBlocks < totalBlocks) {
+        // No ha golpeado todos — mostrar mensaje y rechazar
+        if (!w1.warningShown) {
+          w1.warningShown = true;
+          tendySays(`¡Faltan ${totalBlocks - hitBlocks} bloques! 💎`, 2500, 'game-1');
+          playSound(300, 0.15);
+          setTimeout(() => { w1.warningShown = false; }, 2800);
+        }
+        // Empujarlo de vuelta a la izquierda
+        w1.x = Math.max(10, w1.x - 30);
+        return;
+      }
       w1.finished = true;
       stopGameLoop();
       victorySound();
@@ -2287,13 +2335,14 @@ function startWorld4() {
     onGround: true, facingLeft: false, finished: false,
     fuel: 100, maxFuel: 100,
     totalPowerups: powerupCount,
-    timeLeft: 20, lastTick: Date.now()
+    timeLeft: 30, lastTick: Date.now()
   };
 
-  document.getElementById('bonus-timer').textContent = '20';
+  document.getElementById('bonus-timer').textContent = '30';
   document.getElementById('bonus-timer').classList.remove('warn');
 
-  setTimeout(() => tendySays(TENDY_DIALOG.world4[1], 2200, 'game-4'), 500);
+  setTimeout(() => tendySays(TENDY_DIALOG.world4[0], 2500, 'game-4'), 500);
+  setTimeout(() => tendySays(TENDY_DIALOG.world4[1], 2500, 'game-4'), 3200);
   startGameLoop(updateWorld4);
 }
 
@@ -2368,7 +2417,7 @@ function updateWorld4() {
         bubble.style.left = (playerLeft + 22) + 'px';
         bubble.style.bottom = (playerBottom + 60) + 'px';
         w4.area.appendChild(bubble);
-        setTimeout(() => bubble.remove(), 1800);
+        setTimeout(() => bubble.remove(), 3500);
       }
 
       p.style.transition = 'all 0.3s';
@@ -2464,33 +2513,21 @@ function skipFinal() {
 }
 
 // ============================================================
-// PANTALLA QR — Genera QR del Google Form
+// PANTALLA SUBIR CV — Abre Google Form directo
 // ============================================================
 function showQRScreen() {
   hideAll();
   document.getElementById('screen-qr').classList.remove('hidden');
-
-  const formUrl = window.CV_FORM_URL || 'https://forms.gle/3AMzzJYLa4SzNwVF9';
-  console.log('🔗 URL del QR:', formUrl);
-
-  // Generar QR
-  const qrContainer = document.getElementById('qrcode');
-  qrContainer.innerHTML = '';
-  try {
-    new QRCode(qrContainer, {
-      text: formUrl,
-      width: 240,
-      height: 240,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H
-    });
-  } catch (e) {
-    console.error('Error generando QR:', e);
-    qrContainer.innerHTML = '<p style="color:#000;font-size:14px;padding:20px;">Error generando QR</p>';
-  }
-
   victorySound();
+}
+
+function openCVForm() {
+  const formUrl = window.CV_FORM_URL || 'https://forms.gle/3AMzzJYLa4SzNwVF9';
+  console.log('🔗 Abriendo Form:', formUrl);
+  // Abrir en nueva pestaña
+  window.open(formUrl, '_blank', 'noopener,noreferrer');
+  playSound(900, 0.1);
+  setTimeout(() => playSound(1200, 0.15), 120);
 }
 
 function goToEndScreen() {
