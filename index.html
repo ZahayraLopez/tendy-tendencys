@@ -1173,29 +1173,28 @@
     </div>
   </div>
 
-  <!-- ============== MUNDO 4: BONUS ============== -->
+  <!-- ============== MUNDO 4: PLATAFORMAS MIX ============== -->
   <div class="screen world-intro hidden" id="screen-intro-4">
     <h2>MUNDO 1-4</h2>
     <div class="robot-icon-big" id="intro-robot-4"></div>
-    <p>"INNOVATION FACTORY 🏭"</p>
-    <div style="background:rgba(255,215,0,0.15);border:3px solid #FFD700;padding:14px;margin:18px auto;max-width:340px;border-radius:8px;">
-      <p style="color:#FFD700;font-size:11px;line-height:1.6;text-align:left;">
-        ⚡ Atrapa los RAYOS DORADOS<br>
-        💡 Cada rayo te muestra un dato de Tendencys<br>
-        ⏱️ Tienes 30 segundos<br>
-        🎮 Usa ← → para moverte y JET para volar
+    <p>"TENDENCYS UNIVERSE 🌎"</p>
+    <div style="background:rgba(0,255,255,0.12);border:3px solid #00FFFF;padding:14px;margin:18px auto;max-width:340px;border-radius:8px;">
+      <p style="color:#00FFFF;font-size:11px;line-height:1.6;text-align:left;">
+        💎 Golpea los 6 bloques ?<br>
+        🪙 Recolecta las gemas<br>
+        ⚡ Atrapa los power-ups dorados<br>
+        🏁 Llega a la bandera al final
       </p>
     </div>
-    <button class="press-btn" onclick="startWorld4()">FLY! ▶</button>
+    <button class="press-btn" onclick="startWorld4()">PLAY ▶</button>
   </div>
 
   <div class="hidden" id="screen-world-4">
     <div class="hud">
-      <div class="hud-item">🎁 BONUS</div>
-      <div class="hud-item">⚡ <span id="hud-powerups">0</span></div>
+      <div class="hud-item">🌎 MUNDO</div>
+      <div class="hud-item">⚡ <span id="hud-powerups">0</span>/3</div>
       <div class="hud-item">⭐ 1-4</div>
     </div>
-    <div class="bonus-timer" id="bonus-timer">30</div>
     <div class="game-area" id="game-4"></div>
   </div>
 
@@ -2282,7 +2281,7 @@ function chooseMaze(i, btn) {
 }
 
 // ============================================================
-// MUNDO 4 — BONUS (recolectar power-ups)
+// MUNDO 4 — PLATAFORMAS MARIO STYLE (mix de datos)
 // ============================================================
 let w4 = {};
 
@@ -2298,24 +2297,105 @@ function startWorld4() {
 
   area.appendChild(makeGround());
 
-  // Generar power-ups aleatorios con ideas de Tendencys
-  const ideas = COMPANY_INFO.innovations;
-  // Mezclar las ideas para variedad
-  const shuffled = [...ideas].sort(() => Math.random() - 0.5);
-  const powerupCount = Math.min(12, shuffled.length);
-  for (let i = 0; i < powerupCount; i++) {
+  // 6 bloques ? con MIX de datos (servicios + valores + estadísticas)
+  const blockData = [
+    { title: "📦 ENVIA.COM", text: "El mejor software de automatización de órdenes para e-commerce." },
+    { title: "🤝 SERVICIO", text: "Uno de nuestros 5 valores. Ponemos al cliente primero, siempre." },
+    { title: "📊 +50,000 EMPRESAS", text: "Más de 50,000 empresas confían en Tendencys para sus envíos." },
+    { title: "🔌 ECART API", text: "Integración con +40 plataformas de e-commerce desde una sola API." },
+    { title: "💡 INNOVACIÓN", text: "Uno de nuestros valores. Siempre buscamos mejorar y crear lo nuevo." },
+    { title: "🚀 +1M ENVÍOS", text: "Más de 1 millón de envíos procesados. ¡Y seguimos creciendo!" }
+  ];
+
+  // Posiciones distribuidas a lo largo del nivel
+  const blockPositions = [
+    { left: 14, top: 38 },
+    { left: 28, top: 22 },
+    { left: 42, top: 38 },
+    { left: 56, top: 22 },
+    { left: 70, top: 38 },
+    { left: 82, top: 22 }
+  ];
+  blockPositions.forEach((pos, i) => {
+    const b = document.createElement('div');
+    b.className = 'qblock';
+    b.style.left = pos.left + '%';
+    b.style.top = pos.top + '%';
+    b.textContent = '?';
+    b.dataset.info = i;
+    area.appendChild(b);
+  });
+
+  // Guardar info en w4 para usar al golpear bloque
+  w4.blockData = blockData;
+
+  // Plataformas elevadas (3 plataformas zigzag)
+  const platforms = [
+    { left: 24, bottom: 32, w: 80 },
+    { left: 50, bottom: 32, w: 80 },
+    { left: 76, bottom: 32, w: 80 }
+  ];
+  platforms.forEach(p => {
+    const plat = document.createElement('div');
+    plat.className = 'platform';
+    plat.style.width = p.w + 'px';
+    plat.style.height = '14px';
+    plat.style.left = p.left + '%';
+    plat.style.bottom = p.bottom + '%';
+    area.appendChild(plat);
+  });
+
+  // Monedas (gemas cyan) distribuidas
+  const coinPositions = [
+    { left: 10, bottom: 55 },
+    { left: 22, bottom: 50 },
+    { left: 36, bottom: 55 },
+    { left: 50, bottom: 50 },
+    { left: 64, bottom: 55 },
+    { left: 78, bottom: 50 },
+    { left: 88, bottom: 60 }
+  ];
+  coinPositions.forEach(pos => {
+    const c = document.createElement('div');
+    c.className = 'coin';
+    c.style.left = pos.left + '%';
+    c.style.bottom = pos.bottom + '%';
+    area.appendChild(c);
+  });
+
+  // Power-ups dorados (raros, dan bonus)
+  const powerupPositions = [
+    { left: 30, bottom: 65 },
+    { left: 58, bottom: 65 },
+    { left: 86, bottom: 70 }
+  ];
+  const powerupTexts = [
+    "⚡ ECARTPAY: pagos en +10 países",
+    "🏭 WMS: fulfillment en +20 países",
+    "🎉 ¡10 años de Tendencys en 2026!"
+  ];
+  powerupPositions.forEach((pos, i) => {
     const p = document.createElement('div');
     p.className = 'powerup';
     p.innerHTML = document.getElementById('powerup-bolt').innerHTML;
-    p.style.left = (10 + Math.random() * 80) + '%';
-    p.style.bottom = (15 + Math.random() * 60) + '%';
-    p.dataset.idea = shuffled[i]; // Asignar idea
+    p.style.left = pos.left + '%';
+    p.style.bottom = pos.bottom + '%';
+    p.dataset.idea = powerupTexts[i];
     area.appendChild(p);
-  }
+  });
 
+  // Bandera/tubería final
+  const pipe = document.createElement('div');
+  pipe.className = 'pipe flag';
+  pipe.style.right = '2%';
+  pipe.innerHTML = '<div class="pipe-top"></div><div class="pipe-body"></div>';
+  area.appendChild(pipe);
+
+  // Jugador
   const player = createPlayerWithJet();
   area.appendChild(player);
 
+  // Controles
   const controls = document.createElement('div');
   controls.className = 'touch-controls';
   controls.innerHTML = `
@@ -2331,82 +2411,99 @@ function startWorld4() {
   attachControl(document.getElementById('jump-btn-4'), 'jump');
 
   w4 = {
+    ...w4,
     player, area, x: 60, y: 0, vy: 0,
     onGround: true, facingLeft: false, finished: false,
     fuel: 100, maxFuel: 100,
-    totalPowerups: powerupCount,
-    timeLeft: 30, lastTick: Date.now()
+    warningShown: false
   };
 
-  document.getElementById('bonus-timer').textContent = '30';
-  document.getElementById('bonus-timer').classList.remove('warn');
-
-  setTimeout(() => tendySays(TENDY_DIALOG.world4[0], 2500, 'game-4'), 500);
-  setTimeout(() => tendySays(TENDY_DIALOG.world4[1], 2500, 'game-4'), 3200);
+  setTimeout(() => tendySays('¡Golpea los 6 bloques! 💎', 2500, 'game-4'), 500);
+  setTimeout(() => tendySays('Luego ve a la bandera 🏁', 2500, 'game-4'), 3200);
   startGameLoop(updateWorld4);
 }
 
 function updateWorld4() {
-  if (w4.finished) return;
-
-  // Timer
-  const now = Date.now();
-  if (now - w4.lastTick >= 1000) {
-    w4.lastTick = now;
-    w4.timeLeft--;
-    const timerEl = document.getElementById('bonus-timer');
-    timerEl.textContent = w4.timeLeft;
-    if (w4.timeLeft <= 5) timerEl.classList.add('warn');
-    if (w4.timeLeft <= 0) { endWorld4(); return; }
-  }
+  if (w4.finished || game.popupOpen) return;
 
   const gw = w4.area.clientWidth;
+
+  // Movimiento horizontal
   let vx = 0;
-  if (keys.left) { vx = -4; w4.facingLeft = true; }
-  else if (keys.right) { vx = 4; w4.facingLeft = false; }
+  if (keys.left) { vx = -3.5; w4.facingLeft = true; }
+  else if (keys.right) { vx = 3.5; w4.facingLeft = false; }
   w4.x += vx;
   w4.x = Math.max(10, Math.min(gw - 50, w4.x));
 
+  // Salto
   if (keys.jumpPressed && w4.onGround) {
     w4.vy = -9; w4.onGround = false;
     playSound(700, 0.1);
   }
   keys.jumpPressed = false;
 
+  // Jet-pack
   const flame = w4.player.querySelector('.jet-flame');
   if (keys.jump && !w4.onGround && w4.fuel > 0) {
-    w4.vy -= 0.75;
+    w4.vy -= 0.7;
     if (w4.vy < -7) w4.vy = -7;
-    w4.fuel -= 0.6; // menos consumo en bonus
+    w4.fuel -= 0.8;
     flame.classList.add('active');
     if (Math.random() < 0.3) playSound(1800 + Math.random()*200, 0.04);
   } else {
     flame.classList.remove('active');
   }
 
+  // Gravedad
   w4.vy += 0.55;
   w4.y += w4.vy;
   if (w4.y >= 0) {
     w4.y = 0; w4.vy = 0; w4.onGround = true;
-    w4.fuel = Math.min(w4.maxFuel, w4.fuel + 1.5);
+    w4.fuel = Math.min(w4.maxFuel, w4.fuel + 1.2);
   }
-  // Limitar altura
-  const maxY = w4.area.clientHeight - 100;
-  if (w4.y < -maxY) { w4.y = -maxY; w4.vy = 0; }
 
   w4.player.style.left = w4.x + 'px';
   w4.player.style.bottom = (60 - w4.y) + 'px';
   w4.player.classList.toggle('flipped', w4.facingLeft);
 
-  // Colisiones power-ups
+  // Colisiones
   const pr = w4.player.getBoundingClientRect();
+
+  // Bloques ? con info
+  document.querySelectorAll('#game-4 .qblock:not(.hit)').forEach(b => {
+    const r = b.getBoundingClientRect();
+    if (overlap(pr, r) && w4.vy < 0) {
+      b.classList.add('hit');
+      b.textContent = '★';
+      const idx = parseInt(b.dataset.info);
+      const info = w4.blockData[idx];
+      showPopup(info.title, info.text);
+      playSound(900, 0.15);
+      w4.vy = 2;
+    }
+  });
+
+  // Monedas
+  document.querySelectorAll('#game-4 .coin').forEach(c => {
+    const r = c.getBoundingClientRect();
+    if (overlap(pr, r)) {
+      game.coins++;
+      c.style.transition = 'all 0.3s';
+      c.style.transform = 'translateY(-80px) scale(1.5)';
+      c.style.opacity = '0';
+      playSound(1200, 0.1);
+      setTimeout(() => c.remove(), 300);
+    }
+  });
+
+  // Power-ups (bonus)
   document.querySelectorAll('#game-4 .powerup').forEach(p => {
     const r = p.getBoundingClientRect();
     if (overlap(pr, r)) {
       game.powerupsCollected++;
       document.getElementById('hud-powerups').textContent = game.powerupsCollected;
 
-      // Mostrar idea flotante
+      // Burbuja flotante con dato
       const idea = p.dataset.idea;
       if (idea) {
         const bubble = document.createElement('div');
@@ -2425,9 +2522,29 @@ function updateWorld4() {
       p.style.opacity = '0';
       playSound(1500, 0.1); setTimeout(() => playSound(1800, 0.08), 60);
       setTimeout(() => p.remove(), 300);
-      if (game.powerupsCollected >= w4.totalPowerups) { endWorld4(); }
     }
   });
+
+  // Bandera final — solo si golpeó todos los bloques
+  const pipe = document.querySelector('#game-4 .pipe');
+  if (pipe) {
+    const pp = pipe.getBoundingClientRect();
+    if (overlap(pr, pp) && !w4.finished) {
+      const totalBlocks = document.querySelectorAll('#game-4 .qblock').length;
+      const hitBlocks = document.querySelectorAll('#game-4 .qblock.hit').length;
+      if (hitBlocks < totalBlocks) {
+        if (!w4.warningShown) {
+          w4.warningShown = true;
+          tendySays(`¡Faltan ${totalBlocks - hitBlocks} bloques! 💎`, 2500, 'game-4');
+          playSound(300, 0.15);
+          setTimeout(() => { w4.warningShown = false; }, 2800);
+        }
+        w4.x = Math.max(10, w4.x - 30);
+        return;
+      }
+      endWorld4();
+    }
+  }
 }
 
 function endWorld4() {
@@ -2435,7 +2552,7 @@ function endWorld4() {
   w4.finished = true;
   stopGameLoop();
   victorySound();
-  setTimeout(() => { hideAll(); document.getElementById('screen-intro-5').classList.remove('hidden'); }, 800);
+  setTimeout(() => { hideAll(); document.getElementById('screen-intro-5').classList.remove('hidden'); }, 1200);
 }
 
 // ============================================================
